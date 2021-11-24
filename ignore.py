@@ -88,6 +88,12 @@ except ImportError or NameError:
 	install('sqlite3')
 	install('platform')
 	install('getpass')
+	import shutil
+	import requests
+	import sqlite3
+	import platform as plt
+	from re import findall
+	import getpass
 
 sysinfo = f"""
         Operating System: {plt.system()}
